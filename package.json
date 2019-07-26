@@ -8,9 +8,6 @@
   },
   "dependencies": {
     "bitcoinjs-lib": "latest",
-    "cors": "latest",
-    "ejs": "latest",
-    "express": "latest",
     "jquery": "latest",
   }
 }
