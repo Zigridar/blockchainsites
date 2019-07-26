@@ -38,16 +38,12 @@
             </div>
         </div>
         <div class='row'>
-            <form id="formRPC" class="form-inline">
-                <div class="form-group mb-2">
-                    <label for="staticCommand" class="sr-only">RPC command</label>
-                    <input type="text" readonly class="form-control-plaintext" id="staticCommand" value="RPC command">
+            <form id="formRPC">
+                <div class="form-group">
+                  <label for="rpcCommand">RPC command</label>
+                  <input type="text" class="form-control" id="rpcCommand" placeholder="getwalletinfo">
                 </div>
-                <div class="form-group mx-sm-3 mb-2">
-                    <label for="inputCommand" class="sr-only">getwalletinfo</label>
-                    <input type="text" class="form-control" id="inputCommand" placeholder="getwalletinfo">
-                </div>
-                <button type="submit" class="btn btn-primary mb-2">Send</button>
+                <button type="submit" class="btn btn-primary">Send</button>
                 </div>
                 <div class="form-group">
                     <label for="responceTextarea">Responce</label>
