@@ -1,0 +1,16 @@
+{
+  "name": "BlockSites",
+  "version": "0.1.0",
+  "description": "Blockchain sites",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/3s3s/blockchainsites.git"
+  },
+  "dependencies": {
+    "bitcoinjs-lib": "latest",
+    "cors": "latest",
+    "ejs": "latest",
+    "express": "latest",
+    "jquery": "latest",
+  }
+}
