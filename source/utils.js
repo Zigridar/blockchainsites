@@ -17,7 +17,7 @@ const networks = {
   },
 };
 
-function sendRPC(method, params, network = "tBTC")
+exports.sendRPC = function(method, params, network = "tBTC")
 {
   const headers = {
       'Content-Type': 'text/plain', 
@@ -36,50 +36,39 @@ function sendRPC(method, params, network = "tBTC")
 
 exports.importaddress = function(address, label = "", network = "tBTC")
 {
-    return sendRPC('importaddress', '["'+address+'", "'+label+'", false]', network);
+    return exports.sendRPC('importaddress', '["'+address+'", "'+label+'", false]', network);
 }
 
 exports.broadcast = function(hex, network = "tBTC")
 {
-    return sendRPC('sendrawtransaction', '["'+hex+'"]', network);
+    return exports.sendRPC('sendrawtransaction', '["'+hex+'"]', network);
 }
 
 exports.getrawtransaction = function(txid, network = "tBTC")
 {
-    return sendRPC('getrawtransaction', '["'+txid+'", true]', network);
+    return exports.sendRPC('getrawtransaction', '["'+txid+'", true]', network);
 }
 
 exports.listsinceblock = function(hash, network = "tBTC")
 {
-    return sendRPC('listsinceblock', '["'+hash+'", 1, true]', network);
+    return exports.sendRPC('listsinceblock', '["'+hash+'", 1, true]', network);
 }
 
 exports.unspents = function(address = "", conf = 0, maxconf = 9999999, network = "tBTC")
 {
     const filter = address.length ? ', ["'+address+'"]' : "";
 
-    return sendRPC('listunspent', '['+conf+', '+maxconf+filter+']', network);
+    return exports.sendRPC('listunspent', '['+conf+', '+maxconf+filter+']', network);
 }
 
 exports.height = function(network = "tBTC")
 {
-    return sendRPC('getblockcount', '[]', network);
+    return exports.sendRPC('getblockcount', '[]', network);
 }
 
 exports.getblockhash = function(height, network = "tBTC")
 {
-  const headers = {
-      'Content-Type': 'text/plain', 
-      'Authorization': 'Basic ' + new Buffer(networks[network].user + ':' + networks[network].password).toString('base64')
-  }
-    
-  return fetch(networks[network].url, {
-      method: 'post', 
-      headers: headers,
-      body: '{"jsonrpc": "1.0", "id":"curltest", "method": "getblockhash", "params": ['+height+'] }'})
-      .then(res => res.json()); 
-      
-    return sendRPC('getblockhash', '['+height+']', network);
+    return exports.sendRPC('getblockhash', '['+height+']', network);
 }
 
 exports.Hash160 = function(str)

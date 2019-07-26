@@ -4,7 +4,11 @@ const utils = require("./utils");
 const tools = require("./tools");
 const $ = require('jquery');
 
-$('#formRPC').submit(e => {
+$('#formRPC').submit(async e => {
     e.preventDefault();
-    alert('on submit')
+    
+    const method = $('#rpcCommand').val();
+    const ret = await utils.sendRPC(method, '[]');
+    
+    $('#responceTextarea').val(JSON.stringify(ret));
 });
