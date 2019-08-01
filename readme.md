@@ -2,12 +2,15 @@ Before launch you have to create a file "bitcoin.conf" in your directory of bitc
 
 The "bitcoin.conf" must contain the following lines:
 
-
+---
 rpcuser=rpc_bts_test
-rpcpassword=rpc_btc_password_test
-server=1
-rpcallowip=127.0.0.1
 
+rpcpassword=rpc_btc_password_test
+
+server=1
+
+rpcallowip=127.0.0.1
+---
 
 
 The first launch:
