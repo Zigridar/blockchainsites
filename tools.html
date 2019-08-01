@@ -57,21 +57,32 @@
     <div class='container'>
         <div class='row'>
             <div class='col md-12'>
-                <h2>Tools</h2>
+                <h2>Command Line</h2>
             </div>
         </div>
         <div class='row'>
           <div class='col md-12'>
             <form id="formRPC">
-                <div class="form-group">
-                  <label for="rpcCommand">RPC command</label>
-                  <input type="text" class="form-control" id="rpcCommand" placeholder="getwalletinfo">
+
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" id="rpcCommand" placeholder="getwalletinfo" aria-label="cammand" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="submit" id="button-addon2">send</button>
                 </div>
-                <button type="submit" class="btn btn-primary">Send</button>
-                <div class="form-group">
-                    <label for="responceTextarea">Responce</label>
-                    <textarea class="form-control" id="responceTextarea" rows="3"></textarea>
+              </div>
+              <br><br>
+
+                <div class="card invisible" id="resultCard">
+                  <div class="card-body">
+                    <h5 class="card-title" id="resultTitle"></h5>
+                    <pre>
+                      <p class="card-text" id="responceTextarea">
+
+                      </p>
+                    </pre>
+                  </div>
                 </div>
+
             </form>
           </div>
         </div>

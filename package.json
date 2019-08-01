@@ -1,15 +1,29 @@
 {
-  "name": "BlockSites",
+  "name": "blocksites",
   "version": "0.1.0",
   "description": "Blockchain sites",
   "repository": {
     "type": "git",
-    "url": "https://github.com/3s3s/blockchainsites.git"
+    "url": "git+https://github.com/3s3s/blockchainsites.git"
   },
   "dependencies": {
-    "bitcoinjs-lib": "latest",
-    "jquery": "latest",
     "bip65": "latest",
-    "node-fetch": "latest"
-  }
+    "bitcoinjs-lib": "latest",
+    "electron": "^6.0.0",
+    "jquery": "latest",
+    "node-fetch": "latest",
+    "util": "^0.12.1"
+  },
+  "bugs": {
+    "url": "https://github.com/3s3s/blockchainsites/issues"
+  },
+  "homepage": "https://github.com/3s3s/blockchainsites#readme",
+  "main": "main.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "electron .",
+    "build": "browserify --debug ./source/index.js > ./js/index.js"
+  },
+  "author": "",
+  "license": "ISC"
 }
