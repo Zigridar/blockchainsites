@@ -2,6 +2,7 @@ Before launch you have to create a file "bitcoin.conf" in your directory of bitc
 
 The "bitcoin.conf" must contain the following lines:
 ---
+testnet=1
 
 rpcuser=rpc_bts_test
 
