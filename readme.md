@@ -4,7 +4,7 @@ The "bitcoin.conf" must contain the following lines:
 ---
 testnet=1
 
-rpcuser=rpc_bts_test
+rpcuser=rpc_btc_test
 
 rpcpassword=rpc_btc_password_test
 

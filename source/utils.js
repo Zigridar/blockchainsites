@@ -10,7 +10,7 @@ const fetch = require('node-fetch');
 const networks = {
   'tBTC' : {
       url: 'http://127.0.0.1:18332',
-      user: 'rpc_bts_test',
+      user: 'rpc_btc_test',
       password: 'rpc_btc_password_test',
       name: 'Bitcoin',
       NETWORK: bitcoin.networks.testnet
