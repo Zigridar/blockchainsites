@@ -15,6 +15,8 @@
     <!-- Custom styles for this template -->
     <link href="css/index.css" rel="stylesheet">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script> <!-- SummerNote -->
+
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
@@ -33,6 +35,10 @@
     <script src="source/codemirror/addon/hint/xml-hint.js"></script>
     <script src="source/codemirror/addon/hint/javascript-hint.js"></script>
 
+    <!-- SummerNote -->
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.js"></script>
 
   </head>
   <body>
@@ -67,14 +73,11 @@
 
 
     <div class='container'>
-        <div class='row'>
-            <div class='col-lg-6' id="codeeditor">
-                <h2>Constructor</h2>
-            </div>
-            <div class="col-lg-6">
+        <div class='row' id="codeeditor">
 
-            </div>
         </div>
+        <br>
+        <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
     </div>
   </body>
   <script src="js/index.js"></script>
