@@ -2,33 +2,72 @@
 
 const path = require('path');
 const url = require('url');
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, dialog, ipcMain} = require('electron');
 
-let win;
+const utils = require('./source/utils.js');
+const constants = require('./source/constants.js');
 
+let window;
+
+//Window options
 function createWindow() {
-  win = new BrowserWindow({
+  window = new BrowserWindow({
     width: 1500,
     height: 800,
-    icon : __dirname + '/source/img/icon.png'
+    icon : __dirname + '/source/img/icon.png',
+    webPreferences: {
+      nodeIntegration: true
+    },
+    // frame: false          //after debugging
   });
 
-  win.loadURL(url.format({
+  window.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file',
     slashes: true
   }));
 
-  //win.webContents.openDevTools();
+  window.webContents.openDevTools();   //after debugging
 
-  win.on('closed', () => {
-    win = null;
+  window.on('closed', () => {
+    window = null;
   });
 
 }
 
+//Start application
 app.on('ready', createWindow);
 
+//Close application
 app.on('window-all-closed', () => {
   app.quit();
+});
+
+//Read html from file to edit
+ipcMain.on('openBtn', (event) => {
+
+  dialog.showOpenDialog(constants.ipcOpen, async (filePath) => {
+    const html = await utils.openHTML(filePath[0]);
+    event.sender.send('openReply', html);
+  });
+
+});
+
+//Save local page
+ipcMain.on('saveBtn', (event, page) => {
+
+  dialog.showSaveDialog(constants.ipcSave, async (fileName) => {
+    await utils.saveLocal(page, fileName);
+  });
+
+});
+
+//Read html from file to load
+ipcMain.on('openForLoading', (event) => {
+
+  dialog.showOpenDialog(constants.ipcSave, async (filePath) => {
+    const html = await utils.openHTML(filePath[0]);
+    event.sender.send('loadReply', html);
+  })
+
 });

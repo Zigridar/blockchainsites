@@ -1,7 +1,12 @@
-'use strict';
+'use strict'
+
+// const {ipcRender} = electron;
+const ipcRender = electron.ipcRenderer;
+const utils = require('./utils.js');
 
 $(document).ready(function() {
 
+  //Creating codeeditor
   $('#codeeditor').summernote({
     toolbar: [
       ['style', ['bold', 'italic', 'underline', 'clear']],
@@ -30,4 +35,49 @@ $(document).ready(function() {
       spellcheck: true
   }
   });
+
+  //Button for creating new page
+  $('#createBtn').click((event) => {
+    event.preventDefault();
+    $('#constructorQuestion').remove();
+    $('.container').removeClass('invisible');
+  });
+
+  //Button for editing existing page
+  $('.openBtn').click((event) => {
+    event.preventDefault();
+    $('#constructorQuestion').remove();
+    $('.container').removeClass('invisible');
+    //Code for opening htmlfile
+    ipcRender.send('openBtn');
+  });
+
+  //Button for local saving page
+  $('#saveBtn').click((event) => {
+    event.preventDefault();
+    ipcRender.send('saveBtn', $('#codeeditor').summernote('code'));
+  });
+
+  //Communication to main process
+  ipcRender.on('openReply', async (event, html) => {
+    $('#codeeditor').summernote('code', html);
+  });
+
+  //Button for loading the page to Blockchain
+  $('#loadBtn').click((e) => {
+    e.preventDefault();
+    ipcRender.send('openForLoading');
+  });
+
+  //Sending rawTx with data (page) to BlockChain
+  ipcRender.on('loadReply', async (event, html) => {
+    const trimHTML = await utils.trimHTML(html);
+    //code for saving data
+    // const rawTx = await utils.txBuild(trimHTML, privateKey, input, nOut); // Set privateKey, input and nOut
+    // const txWithPage = await utils.broadcast(rawTx);
+    // const unspentTX = await utils.joinOutputs(txWithPage.result);
+    console.log(trimHTML); //debugging
+  });
+
+
 });

@@ -10,6 +10,9 @@
 
     <title>Blockchain sites</title>
 
+    <!-- electron must be included in the HTML above other libreries -->
+    <script src="./js/electronForGUI.js"></script>
+
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- Custom styles for this template -->
@@ -69,15 +72,22 @@
       <p class="lead">This is a simple constructor for creating your own web-page</p>
         <hr class="my-4">
       <p>It uses the blockchain of Bitcoin Test</p>
+      <div id="constructorQuestion">
+        <h4 class="lead">Do you want to create new page or open existing?</h4>
+        <button type="button" class="btn btn-secondary" id="createBtn">create new</button>
+        <button type="button" class="btn btn-secondary openBtn">open file</button>
+      </div>
     </div>
 
 
-    <div class='container'>
+    <div class='container  invisible'>
         <div class='row' id="codeeditor">
 
         </div>
         <br>
         <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+        <button type="button" class="btn btn-primary openBtn">Open file</button>
+        <button type="button" class="btn btn-success" id="loadBtn">Load page to BlockChain</button>
     </div>
   </body>
   <script src="js/index.js"></script>
