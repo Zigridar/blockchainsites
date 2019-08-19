@@ -12,6 +12,7 @@ server=1
 
 rpcallowip=127.0.0.1
 
+txindex=1
 
 
 The first launch:
