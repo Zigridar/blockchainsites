@@ -1,14 +1,33 @@
-'use strict';
+'use strict'
 
 const utils = require("./utils");
-const tools = require("./tools");
 const $ = require('jquery');
+const util = require('util');
 
 $('#formRPC').submit(async e => {
-    e.preventDefault();
-    
-    const method = $('#rpcCommand').val();
-    const ret = await utils.sendRPC(method, '[]');
-    
-    $('#responceTextarea').val(JSON.stringify(ret));
+
+  e.preventDefault();
+
+  const strBody = $('#rpcCommand').val();
+  let ret = await utils.commandLine(strBody);
+
+  $('#rpcCommand').val('');
+
+  $('#resultCard').removeClass('invisible');
+
+  if(ret.error == null) {
+    $("#resultTitle").html("Result");
+    ret = util.inspect(ret.result, {
+      depth: Infinity,
+    });
+  }
+  else {
+    $("#resultTitle").html("Error");
+    ret = util.inspect(ret.error, {
+      depth: Infinity,
+    });
+  }
+
+  $('#responceTextarea').html(ret);
+
 });
