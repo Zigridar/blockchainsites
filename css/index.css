@@ -5,3 +5,22 @@ body {
 #responceTextarea {
   -webkit-user-select: text;
 }
+
+div.fp-controlArrow.fp-prev {
+    display: none;
+}
+div.fp-controlArrow.fp-next {
+    display: none;
+}
+
+#codContainer {
+  display: none;
+}
+
+#constructorTable {
+  display: none;
+}
+
+#resultCard {
+  display: none;
+}
