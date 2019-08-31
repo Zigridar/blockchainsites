@@ -25,3 +25,7 @@ exports.ipcOpen = {
   ],
   properties: ['openFile']
 }
+
+exports.getMemory = {
+  faucet: "https://coinfaucet.eu/en/btc-testnet/"
+}

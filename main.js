@@ -18,7 +18,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true
     },
-    // frame: false          //after debugging
+    frame: false          //after debugging
   });
 
   window.loadURL(url.format({
@@ -27,7 +27,7 @@ function createWindow() {
     slashes: true
   }));
 
-  window.webContents.openDevTools();   //after debugging
+  // window.webContents.openDevTools();   //after debugging
 
   window.on('closed', () => {
     window = null;

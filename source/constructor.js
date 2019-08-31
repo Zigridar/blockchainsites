@@ -23,8 +23,11 @@ $(document).ready(function() {
       'Courier New',
     ],
     minHeight: 150,
-    height: 200,
+    height: 400,
     focus: true,
+    callbacks: {
+      onChange: change
+    },
     codemirror: {
       mode: "text/html",
       lineNumbers: true,
@@ -36,18 +39,26 @@ $(document).ready(function() {
   }
   });
 
+  async function change() {
+    let data = $('#codeeditor').summernote('code');
+    data = await utils.trimHTML(data);
+    $('#pageSize').html(Math.ceil(data.length / 2));
+  }
+
   //Button for creating new page
   $('#createBtn').click((event) => {
     event.preventDefault();
     $('#constructorQuestion').remove();
-    $('.container').removeClass('invisible');
+    $('#codContainer').show();
+    $('#constructorTable').show();
   });
 
   //Button for editing existing page
   $('.openBtn').click((event) => {
     event.preventDefault();
     $('#constructorQuestion').remove();
-    $('.container').removeClass('invisible');
+    $('#codContainer').show();
+    $('#constructorTable').show();
     //Code for opening htmlfile
     ipcRender.send('openBtn');
   });

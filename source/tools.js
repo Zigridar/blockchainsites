@@ -13,7 +13,7 @@ $('#formRPC').submit(async e => {
 
   $('#rpcCommand').val('');
 
-  $('#resultCard').removeClass('invisible');
+  $('#resultCard').show();
 
   if(ret.error == null) {
     $("#resultTitle").html("Result");
