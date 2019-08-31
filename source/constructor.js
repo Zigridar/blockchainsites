@@ -23,7 +23,7 @@ $(document).ready(function() {
       'Courier New',
     ],
     minHeight: 150,
-    height: 400,
+    height: 200,
     focus: true,
     callbacks: {
       onChange: change
@@ -82,12 +82,16 @@ $(document).ready(function() {
 
   //Sending rawTx with data (page) to BlockChain
   ipcRender.on('loadReply', async (event, html) => {
-    const trimHTML = await utils.trimHTML(html);
+    const ret = await utils.SaveTextToBlockchain(html);
+    
+    if (ret.result == true)
+      alert('saved! txid='+ret.txid);
+    //const trimHTML = await utils.trimHTML(html);
     //code for saving data
     // const rawTx = await utils.txBuild(trimHTML, privateKey, input, nOut); // Set privateKey, input and nOut
     // const txWithPage = await utils.broadcast(rawTx);
     // const unspentTX = await utils.joinOutputs(txWithPage.result);
-    console.log(trimHTML); //debugging
+    //console.log(trimHTML); //debugging
   });
 
 

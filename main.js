@@ -12,13 +12,13 @@ let window;
 //Window options
 function createWindow() {
   window = new BrowserWindow({
-    width: 1500,
+    width: 1000,
     height: 800,
     icon : __dirname + '/source/img/icon.png',
     webPreferences: {
       nodeIntegration: true
     },
-    frame: false          //after debugging
+   // frame: false          //after debugging
   });
 
   window.loadURL(url.format({
@@ -27,7 +27,7 @@ function createWindow() {
     slashes: true
   }));
 
-  // window.webContents.openDevTools();   //after debugging
+  window.webContents.openDevTools();   //after debugging
 
   window.on('closed', () => {
     window = null;
