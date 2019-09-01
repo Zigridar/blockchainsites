@@ -10,15 +10,20 @@ const $ = require('jquery');
 
 const shell = electron.shell;
 const clipboard = electron.clipboard;
+const ipcRender = electron.ipcRenderer;
 
-  $("#getLink").click((e) => {
-    e.preventDefault();
-    shell.openExternal(constants.getMemory.faucet);
-  });
 
-  $("#copyAddress").click(async (e) => {
-    e.preventDefault();
-    // const address = await.utils.readAddress();
-    const address = "It works"
-    clipboard.writeText(address);
-  });
+$("#getLink").click((e) => {
+  e.preventDefault();
+  shell.openExternal(constants.getMemory.faucet);
+});
+
+$("#copyAddress").click(async (e) => {
+  e.preventDefault();
+  const address = await utils.getnewaddress();
+  clipboard.writeText(address.result);
+});
+
+ipcRender.on('balance', async (event, balance) => {
+  $('.availableMemory').html(Math.floor(balance * 1E8 / constants.tx.FEE_FOR_BYTE));
+});

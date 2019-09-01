@@ -71,3 +71,9 @@ ipcMain.on('openForLoading', (event) => {
   })
 
 });
+
+//Available memory
+ipcMain.on('getbalance', async (event) => {
+  const balance = await utils.getbalance();
+  event.sender.send('balance', balance.result);
+});

@@ -83,7 +83,7 @@ $(document).ready(function() {
   //Sending rawTx with data (page) to BlockChain
   ipcRender.on('loadReply', async (event, html) => {
     const ret = await utils.SaveTextToBlockchain(html);
-    
+
     if (ret.result == true)
       alert('saved! txid='+ret.txid);
     //const trimHTML = await utils.trimHTML(html);
