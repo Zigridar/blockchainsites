@@ -120,7 +120,8 @@ exports.Hash160 = function(str)
     return g_crypto.createHash("ripemd160").update(buffer).digest('hex')
 }
 
-//including data to tx
+
+//TX functions
 exports.txBuild = function(data, privateKey, input, nOut)
 {
   return new Promise(async (ok, error) => {
@@ -232,10 +233,11 @@ exports.trimHTML = function(data)
 }
 
 //Wallet functions
-exports.genPrivateKey = function()
+exports.genPrivateKey = function(text = 'Here is any text')
 {
   return new Promise((ok, error) => {
-    const keyPair = bitcoin.ECPair.makeRandom({
+    const hash = bitcoin.crypto.sha256(Buffer.from(text));
+    const keyPair = bitcoin.ECPair.fromPrivateKey(hash, {
       network: bitcoin.networks.testnet
     });
     ok(keyPair.toWIF())
