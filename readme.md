@@ -22,15 +22,4 @@ npm install -g browserify
 
 npm install -g electron
 
-npm install
-
-npm run-script build
-
-npm start
-
-Following launches:
----
-
-npm run-script build
-
 npm start
