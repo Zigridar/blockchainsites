@@ -17,7 +17,8 @@ const networks = {
       user: 'rpc_btc_test',
       password: 'rpc_btc_password_test',
       name: 'Bitcoin',
-      NETWORK: bitcoin.networks.testnet
+      NETWORK: bitcoin.networks.testnet,
+      segwit: true
   },
 };
 
@@ -285,26 +286,106 @@ exports.getnewaddress = function(label = "", type = "legacy", network = "tBTC")
 {
     return exports.sendRPC('getnewaddress', '["'+label+'", "'+type+'"]', network);
 }
+exports.testmempoolaccept1 = function(rawtx, network = "tBTC")
+{
+    return exports.sendRPC('testmempoolaccept', '[["'+rawtx+'"]]', network);
+}
 
 
 function GetRedeemScript(keyPair)
 {
     const redeemScript = bitcoin.script.compile([
-      //redeem: <signature> <data>
+      //redeem: <signature> <data> <data>
+      bitcoin.opcodes.OP_DROP,
       bitcoin.opcodes.OP_DROP,
       Buffer.from(keyPair.publicKey, "hex"),
       bitcoin.opcodes.OP_CHECKSIG
+      //bitcoin.opcodes.OP_DROP,
       //bitcoin.opcodes.OP_TRUE
     ])
 
     return redeemScript;
 }
 
-function GetAddressP2SH(keyPair, network = "tBTC")
+function GetP2SH(keyPair, network = "tBTC")
 {
+    return bitcoin.payments.p2sh({ redeem: { output: GetRedeemScript(keyPair), network: networks[network].NETWORK }, network: networks[network].NETWORK });
+}
+
+function GetP2WSH(keyPair, network = "tBTC")
+{
+    return bitcoin.payments.p2wsh({ redeem: { output: GetRedeemScript(keyPair), network: networks[network].NETWORK }, network: networks[network].NETWORK });
+}
+
+function chunks (buffer, chunkSize) {
+	assert(Buffer.isBuffer(buffer),           'Buffer is required');
+	assert(!isNaN(chunkSize) && chunkSize > 0, 'Chunk size should be positive number');
+
+	var result = [];
+	var len = buffer.length;
+	var i = 0;
+
+	while (i < len) {
+		result.push(buffer.slice(i, i += chunkSize));
+	}
+
+	return result;
+}
+
+function assert (cond, err) {
+	if (!cond) throw new Error(err);
+}
+
+function GetFirstTransactions(sendto1, keyPair, outArr, network)
+{
+<<<<<<< HEAD
     const redeemScript = GetRedeemScript(keyPair);
 
     return bitcoin.payments.p2sh({ redeem: { output: redeemScript, network: networks[network].NETWORK }, network: networks[network].NETWORK }).address;
+=======
+  return new Promise(async ok => {
+    let ret = [];
+    const script = networks[network].segwit ? GetP2WSH(keyPair, network) : GetP2SH(keyPair, network);
+    for (let i=0; i<outArr.length; i++)
+    {
+      const first_transaction = await exports.sendtoaddress(script.address, sendto1, network);
+        
+      if (!first_transaction || first_transaction.error|| !first_transaction.result.length)
+        return ok({result: false, message: 'sendtoaddress - error!'});
+      
+      ret.push(first_transaction);
+    }
+    return ok({result: true, transactions: ret, script: script});
+  })
+}
+
+function AddInputs(sendto1, first, network)
+{
+  return new Promise(async ok => 
+  {
+    const txb = new bitcoin.TransactionBuilder(networks[network].NETWORK);
+    
+    for (let i=0; i<first.transactions.length; i++)
+    {
+      const firstTX = await exports.getrawtransaction(first.transactions[i].result, network);
+      if (!firstTX || firstTX.error)
+        return ok({result: false, message: 'getrawtransaction failed!'});
+      
+      //find our output
+      for (let j=0; j<firstTX.result.vout.length; j++)
+      {
+        if (firstTX.result.vout[j].value*1E8 != sendto1*1E8)
+          continue;
+        
+        //add old output as new input    
+        txb.addInput(first.transactions[i].result, firstTX.result.vout[j].n, null, first.script.output);
+        break;
+      }
+    }
+    
+    return ok({result: true, txb: txb});
+  })
+>>>>>>> pr/2
 }
 
 exports.SaveTextToBlockchain = function(dataString, network = "tBTC")
@@ -312,12 +393,16 @@ exports.SaveTextToBlockchain = function(dataString, network = "tBTC")
   return new Promise(async ok => {
     zlib.deflate(Buffer.from(dataString), async (err, deflated_buffer) =>
     {
+      //Splitting data string to big chunks (MAX_DATA_SIZE*2)
+      const outArr = chunks(deflated_buffer, constants.tx.MAX_DATA_SIZE*2);
+
       if (network == 'tBTC')
         constants.tx.FEE_FOR_BYTE = 10;
 
       const minFee = constants.tx.EMPTY_TX_SIZE*constants.tx.FEE_FOR_BYTE;
       const fee = (deflated_buffer.length + constants.tx.EMPTY_TX_SIZE) * constants.tx.FEE_FOR_BYTE;
       const balance = await exports.getbalance();
+<<<<<<< HEAD
 
       if (!balance || balance.error || balance.result*1 < (fee*1+2*minFee)/1E8)
         return ok({result: false, message: 'Insufficient funds!'});
@@ -365,6 +450,68 @@ exports.SaveTextToBlockchain = function(dataString, network = "tBTC")
         redeemScript
       ]));
 
+=======
+      
+      //check user balance
+      if (!balance || balance.error || balance.result*1 < (fee*1+2*minFee)/1E8)
+        return ok({result: false, message: 'Insufficient funds!'});
+      
+      //Send first transactions on random address  
+      const sendto1 = ((fee/outArr.length+2*minFee)/1E8).toFixed(7)*1;
+      const keyPair = bitcoin.ECPair.makeRandom();
+      const first = await GetFirstTransactions(sendto1, keyPair, outArr, network);
+      
+      if (first.result == false)
+        return ok({result: false, message: first.message});
+        
+      assert(outArr.length == first.transactions.length);
+
+      //Get second address
+      const newAddress = networks[network].segwit ?
+        await exports.getnewaddress("bech32", "bech32", network) :
+        await exports.getnewaddress("legacy", "legacy", network) ;
+        
+      if (!newAddress || newAddress.error)
+        return ok({result: false, message: 'getnewaddress RPC error!'});
+        
+      const inputs = await AddInputs(sendto1, first, network);
+      
+      if (inputs.result == false)
+        return ok({result: false, message: inputs.message});
+      
+      inputs.txb.addOutput(newAddress.result, fee*1+minFee);
+      
+      const tx = inputs.txb.buildIncomplete();
+      
+      const redeemScript = first.script.redeem.output;
+      for (let i=0; i<first.transactions.length; i++)
+      {
+        //const signatureHash = tx.hashForSignature(i, redeemScript, bitcoin.Transaction.SIGHASH_ALL);
+        const signatureHash = networks[network].segwit ?
+          tx.hashForWitnessV0(i, redeemScript, sendto1*1E8, bitcoin.Transaction.SIGHASH_ALL) :
+          tx.hashForSignature(i, redeemScript, bitcoin.Transaction.SIGHASH_ALL);
+          
+        const signature = bitcoin.script.signature.encode(keyPair.sign(signatureHash), bitcoin.Transaction.SIGHASH_ALL);
+        
+        //Splitting big chunk to the small chunks (MAX_DATA_SIZE)
+        const data = chunks(outArr[i], constants.tx.MAX_DATA_SIZE);
+        
+        networks[network].segwit ?
+          tx.setWitness(i, [
+            signature,
+            data[0],
+            data.length == 2 ? data[1] : Buffer.from('00', 'hex'),
+            redeemScript
+          ]) :
+          tx.setInputScript(i, bitcoin.script.compile([
+            signature,
+            data[0],
+            data.length == 2 ? data[1] : Buffer.from('00', 'hex'),
+            redeemScript
+          ]));
+      }
+
+>>>>>>> pr/2
       const ret = await exports.broadcast(tx.toHex());
 
       if (ret.error)
