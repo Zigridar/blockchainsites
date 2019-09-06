@@ -86,6 +86,8 @@ $(document).ready(function() {
     
     if (ret.result == true)
       alert('saved! txid='+ret.txid);
+    else
+      alert(ret.message);
     //const trimHTML = await utils.trimHTML(html);
     //code for saving data
     // const rawTx = await utils.txBuild(trimHTML, privateKey, input, nOut); // Set privateKey, input and nOut
