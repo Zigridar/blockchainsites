@@ -14,6 +14,11 @@ rpcallowip=127.0.0.1
 
 txindex=1
 
+limitancestorcount=10000
+
+limitdescedantcount=10000
+
+walletrejectlongchains=0
 
 The first launch:
 ---

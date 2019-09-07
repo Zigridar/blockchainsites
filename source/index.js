@@ -18,7 +18,7 @@ $("#getLink").click((e) => {
   shell.openExternal(constants.getMemory.faucet);
 });
 
-$("#copyAddress").click(async (e) => {
+$(".copyAddress").click(async (e) => {
   e.preventDefault();
   const address = await utils.getnewaddress();
   clipboard.writeText(address.result);
