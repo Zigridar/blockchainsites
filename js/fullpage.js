@@ -1,6 +1,24 @@
 'use strict'
 const ipcRender = electron.ipcRenderer;
 
+const browser = new Navigation({
+  defaultFavicons: true
+});
+
+//function override for specific URL tbtc://
+browser._purifyUrl = function (url) {
+    if (urlRegex({
+            strict: false,
+            exact: true
+        }).test(url)) {
+        url = (url.match(/^https?:\/\/.*/)) ? url : 'http://' + url;
+    } else {
+      if(url.slice(0, 7) == 'tbtc://') return 'http://github.com';    //Specific URL
+        url = (!url.match(/^[a-zA-Z]+:\/\//)) ? 'https://www.google.com/search?q=' + url.replace(' ', '+') : url;
+    }
+    return url;
+}
+
 const slideMove = function(anchorLink, index, slideAnchor, slideIndex) {
   $('.nav-item').removeClass('active');
   switch (slideIndex) {
@@ -18,6 +36,9 @@ const slideMove = function(anchorLink, index, slideAnchor, slideIndex) {
     case 3:
       $('#itemTools').addClass('active');
       break;
+    case 4:
+      $('#itemBrowser').addClass('active');
+      break;
   }
 }
 
@@ -27,6 +48,8 @@ const loadPage = function() {
 }
 
 $(document).ready(function() {
+  // browser.newTab('http://github.com/');
+
   $('#fullpage').fullpage({
     scrollingSpeed: 500,
     anchors: ["first", "second", "third"],

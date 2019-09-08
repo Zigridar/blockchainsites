@@ -16,7 +16,8 @@ function createWindow() {
     height: 800,
     icon : __dirname + '/source/img/icon.png',
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      webviewTag: true
     },
    // frame: false          //after debugging
   });

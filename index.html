@@ -10,6 +10,10 @@
 
     <title>Blockchain sites</title>
 
+    <!-- Browser -->
+    <script src="https://cdn.jsdelivr.net/npm/electron-navigation@1.5.8/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/electron-navigation@1.5.8/themes/chrome-like.css">
+
     <!-- electron must be included in the HTML above other libreries -->
     <script src="./js/electronForGUI.js"></script>
 
@@ -74,6 +78,9 @@
         </li>
         <li class="nav-item" id="itemTools">
           <a class="nav-link" href="#first/3">Tools</a>
+        </li>
+        <li class="nav-item" id="itemBrowser">
+          <a class="nav-link" href="#first/4">Browser</a>
         </li>
       </ul>
     </div>
@@ -234,6 +241,13 @@
               </div>
           </div>
         </div>
+        <div class="slide">
+          <div id="searchBar">
+            <div id="nav-body-ctrls"></div>
+            <div id="nav-body-tabs"></div>
+            <div id="nav-body-views"></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -257,15 +271,6 @@
             </p>
             <button type="button" class="btn btn-primary copyAddress">Copy address</button>
             <br><br>
-            <!-- <p>
-              Next step you have to copy transaction id and paste it to the input field below
-            </p>
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" placeholder="transaction id">
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="submit" id="faucetTx">OK</button>
-              </div>
-            </div> -->
           </div>
         </div>
       </div>
