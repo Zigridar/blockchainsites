@@ -10,6 +10,10 @@
 
     <title>Blockchain sites</title>
 
+    <!-- Browser -->
+    <script src="https://cdn.jsdelivr.net/npm/electron-navigation@1.5.8/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/electron-navigation@1.5.8/themes/chrome-like.css">
+
     <!-- electron must be included in the HTML above other libreries -->
     <script src="./js/electronForGUI.js"></script>
 
@@ -48,6 +52,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.js"></script>
 
+    <!-- autocomplete -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.10/jquery.autocomplete.min.js"></script>
+
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -71,6 +78,9 @@
         </li>
         <li class="nav-item" id="itemTools">
           <a class="nav-link" href="#first/3">Tools</a>
+        </li>
+        <li class="nav-item" id="itemBrowser">
+          <a class="nav-link" href="#first/4">Browser</a>
         </li>
       </ul>
     </div>
@@ -102,7 +112,7 @@
                         </tr>
                         <tr>
                           <td>Available memory:</td>
-                          <td id="availableMemory"></td>
+                          <td class="availableMemory"></td>
                         </tr>
                       </tbody>
                     </table>
@@ -116,9 +126,9 @@
                   <p>
                     On that site in the input field you must paste your personal address to recieve BTC
                   </p>
-                  <button class="btn btn-primary" id="copyAddress">Copy address</button>
+                  <button class="btn btn-primary copyAddress">Copy address</button>
                   <br><br>
-                  <p>
+                  <!-- <p>
                     Next step you have to copy transaction id and paste it to the input field below
                   </p>
                   <div class="input-group mb-3">
@@ -126,7 +136,7 @@
                     <div class="input-group-append">
                       <button class="btn btn-primary" type="submit" id="faucetTx">OK</button>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
               </div>
           </div>
@@ -142,7 +152,7 @@
                   <tbody>
                     <tr>
                       <td>Available memory:</td>
-                      <td id="availableMemory"></td>
+                      <td class="availableMemory"></td>
                     </tr>
                     <tr>
                       <td>Page size:</td>
@@ -231,6 +241,13 @@
               </div>
           </div>
         </div>
+        <div class="slide">
+          <div id="searchBar">
+            <div id="nav-body-ctrls"></div>
+            <div id="nav-body-tabs"></div>
+            <div id="nav-body-views"></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -252,17 +269,8 @@
             <p>
               On that site in the input field you must paste your personal address to recieve BTC
             </p>
-            <button type="button" class="btn btn-primary" id="copyAddress">Copy address</button>
+            <button type="button" class="btn btn-primary copyAddress">Copy address</button>
             <br><br>
-            <p>
-              Next step you have to copy transaction id and paste it to the input field below
-            </p>
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" placeholder="transaction id">
-              <div class="input-group-append">
-                <button class="btn btn-primary" type="submit" id="faucetTx">OK</button>
-              </div>
-            </div>
           </div>
         </div>
       </div>

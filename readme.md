@@ -23,6 +23,8 @@ walletrejectlongchains=0
 The first launch:
 ---
 
+npm install
+
 npm install -g browserify
 
 npm install -g electron

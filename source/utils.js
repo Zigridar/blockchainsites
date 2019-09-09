@@ -121,7 +121,7 @@ exports.Hash160 = function(str)
     return g_crypto.createHash("ripemd160").update(buffer).digest('hex')
 }
 
-//including data to tx
+//TX functions
 exports.txBuild = function(data, privateKey, input, nOut)
 {
   return new Promise(async (ok, error) => {
@@ -233,7 +233,7 @@ exports.trimHTML = function(data)
 }
 
 //Wallet functions
-exports.genPrivateKey = function()
+exports.genPrivateKey = function(text = 'Here is any text')
 {
   return new Promise((ok, error) => {
     const keyPair = bitcoin.ECPair.makeRandom({
@@ -346,10 +346,10 @@ function GetFirstTransactions(sendto1, keyPair, outArr, network)
     for (let i=0; i<outArr.length; i++)
     {
       const first_transaction = await exports.sendtoaddress(script.address, sendto1, network);
-        
+
       if (!first_transaction || first_transaction.error|| !first_transaction.result.length)
         return ok({result: false, message: 'sendtoaddress - error!'});
-      
+
       ret.push(first_transaction);
     }
     return ok({result: true, transactions: ret, script: script});
@@ -358,28 +358,28 @@ function GetFirstTransactions(sendto1, keyPair, outArr, network)
 
 function AddInputs(sendto1, first, network)
 {
-  return new Promise(async ok => 
+  return new Promise(async ok =>
   {
     const txb = new bitcoin.TransactionBuilder(networks[network].NETWORK);
-    
+
     for (let i=0; i<first.transactions.length; i++)
     {
       const firstTX = await exports.getrawtransaction(first.transactions[i].result, network);
       if (!firstTX || firstTX.error)
         return ok({result: false, message: 'getrawtransaction failed!'});
-      
+
       //find our output
       for (let j=0; j<firstTX.result.vout.length; j++)
       {
         if (firstTX.result.vout[j].value*1E8 != sendto1*1E8)
           continue;
-        
-        //add old output as new input    
+
+        //add old output as new input
         txb.addInput(first.transactions[i].result, firstTX.result.vout[j].n, null, first.script.output);
         break;
       }
     }
-    
+
     return ok({result: true, txb: txb});
   })
 }
