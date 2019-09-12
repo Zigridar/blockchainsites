@@ -509,3 +509,92 @@ exports.SaveTextToBlockchain = async function(dataString, network = "tBTC")
   const strJSON = JSON.stringify({type: 'text', base64: Buffer.from(dataString).toString('base64')})
   return await exports.SaveBufferToBlockchain(Buffer.from(strJSON));
 }
+
+function GetDataFromTXID(txid, network = "tBTC")
+{
+  return new Promise(async ok => {
+    const txData = await exports.getrawtransaction(txid, network);
+    if (!txData || txData.error)
+      return ok({type: 'error', data: txData});
+
+    let fullData = "";
+    for (let i=0; i<txData.result.vin.length; i++)
+    {
+        fullData += txData.result.vin[i].txinwitness[1];
+        fullData += txData.result.vin[i].txinwitness[2] == "00" ? "" : txData.result.vin[i].txinwitness[2];
+    }
+
+    return ok({type: 'success', string: fullData});
+  });
+}
+
+function GetObjectFromFullDataString(fullDataString)
+{
+  return new Promise(async ok => {
+    zlib.inflate(Buffer.from(fullDataString, "hex"), (err, inflated_buffer) =>
+    {
+      try {
+        return ok(JSON.parse(inflated_buffer.toString('utf8')));
+      } catch (e) {
+        return ok({type: 'error', data: fullDataString, err: err, error: e});
+      }
+    });
+  });
+}
+
+function ErrorPage(message = "Error!")
+{
+  return "<html><body><h2>"+message+"</h2></body></html>"
+}
+
+function GetDataFromObject(obj, network = "tBTC")
+{
+  return new Promise(async ok => {
+    if (obj.type == 'error')
+      return ok(ErrorPage());
+
+    if (obj.type == 'text')
+      return ok(obj.base64);
+
+    if (obj.type == 'txs')
+    {
+      try {
+        const txsArray = JSON.parse(Buffer.from(obj.base64, 'base64').toString('utf8'));
+
+        let fullData = "";
+        for (let i=0; i<txsArray.length; i++)
+        {
+          const data = await GetDataFromTXID(txsArray[i], network);
+          if (data.type == 'error')
+            return ok(ErrorPage());
+
+          fullData += data.string;
+        }
+
+        const objJSON = await GetObjectFromFullDataString(fullData);
+
+        return ok(await GetDataFromObject(objJSON, network));
+      }
+      catch(e) {
+        return ok(ErrorPage());
+      }
+    }
+  });
+}
+
+exports.GetPageFromBlockchain = function(txid, network = "tBTC")
+{
+  return new Promise(async ok => {
+
+    const data = await GetDataFromTXID(txid, network);
+    if (data.type == 'error')
+      return ok(ErrorPage());
+
+    const obj = await GetObjectFromFullDataString(data.string);
+
+    return ok(await GetDataFromObject(obj, network));
+
+  });
+
+
+}
