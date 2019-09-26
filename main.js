@@ -89,6 +89,7 @@ ipcMain.on('getbalance', async (event) => {
 //Load bookmarks
 ipcMain.on('page-loaded', () => {
   fs.readFile('bookmarks.json', 'utf8', (err, data) => {
+    if(err) data = '{}';
     window.webContents.send('oldBookmarks', JSON.parse(data));
   });
 });
