@@ -1,6 +1,7 @@
 'use strict';
 
 const utils = require("./utils");
+const ipcRender = electron.ipcRenderer;
 
 const getSrc = function(url) {
   return new Promise(async ok => {
@@ -12,5 +13,18 @@ const getSrc = function(url) {
 
 const browser = new navigation({
   defaultFavicons: true,
-  getSrc: getSrc
+  getSrc: getSrc,
+});
+
+$(document).ready(function() {
+  ipcRender.send('page-loaded');
+});
+
+ipcRender.on('oldBookmarks', (event, oldBookmarks) => {
+  browser.bookmarks = oldBookmarks;
+});
+
+ipcRender.on('getJsonBookmarks', () => {
+  const json = browser.getBookmarks();
+  ipcRender.send('JsonBookmarks', JSON.stringify(json));
 });
