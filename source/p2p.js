@@ -2,128 +2,107 @@
 
 const utils = require('./utils.js')
 const io = require('socket.io-client');
-const Peer = require('simple-peer');
 
 const url = 'https://desolate-brook-88028.herokuapp.com';
+// const url = 'http://127.0.0.1:3000/'
+const MAX_PEER_CONNECTIONS = 10;
 
-(async () => {
-  let status = await utils.isFullNode();
-
-if(status) {
-  console.log('I`m full');
-  //initiate for full
-  const socket = io.connect(url, {
-    reconnect: true
-  });
+console.log('I`m full');
 
   let connections = [];
+  let localAnswer;
+  let targetID;
 
-  socket.emit('full-node');
+  // setInterval(function () {
+  //   connections.forEach(item => {
+  //     console.log(item.peer.connectionState);
+  //   });
+  // }, 3000);
 
-  //connect new peer
-  socket.on('offer', (offer) => {
-    const peer = new FullPeer(offer);
-    //all settings for peer
-    peer.peer.on('data', async (url) => {
-      url = url.toString();
+  //connection status to socket-server
+  let connectStatus;
+
+  //new connection to socket-server
+  let server = new serverConnect();
+
+  //socket-server connection constructor
+  function serverConnect() {
+    const socket = io.connect(url, {
+      reconnect: true
+    });
+    connectStatus = true;
+    socket.emit('full-node');
+    socket.on('offer', (offer, candidate, id) => {
+      connections.push(new lowPeer(socket, offer, candidate, id));
+      console.log(connections);
+    });
+    this.socket = socket;
+  }
+
+  //p2p constructor
+  function lowPeer(socket, offer, candidate, id) {
+    const fullNode = new RTCPeerConnection();
+
+    //callback function
+    fullNode.ondatachannel = dataChannel;
+    fullNode.onconnectionstatechange  = connectionState;
+    fullNode.onicecandidate = function(e) {
+      // console.log(e.candidate);
+      if (e.candidate) {
+        if (e.candidate.protocol == 'udp') {
+          // console.log('emit answer  to ' + targetID);
+          socket.emit('answer', localAnswer, e.candidate, targetID);
+
+          //disconnect socket-server
+          if(connections.length > (MAX_PEER_CONNECTIONS - 1)) {
+            socket.removeAllListeners();
+            socket.disconnect();
+            connectStatus = false;
+          }
+        }
+      }
+    }
+
+    fullNode.setRemoteDescription(offer)
+    .then(() => fullNode.createAnswer())
+    .then(answer => fullNode.setLocalDescription(answer))
+    .then(() => {
+      fullNode.addIceCandidate(candidate)
+      localAnswer = fullNode.localDescription;
+      targetID = id;
+    });
+    this.peer = fullNode;
+  }
+
+  //getting data
+  function dataChannel(event) {
+    const receiveChannel = event.channel;
+    receiveChannel.onmessage = async (e) => {
+      let url = e.data.toString();
       const ret = await utils.GetPageFromBlockchain(url.substr(7), 'tBTC');
       url = "data:text/html;base64," + ret;
-      peer.peer.send(url);
-    });
-
-    connections.push(peer);
-  });
-
-  setInterval(checkConnectionsFull, 500);
-
-  ////////////////////////////////////////
-  //full-node constructor
-  function FullPeer(offer) {
-    const connection = this;
-
-    connection.peer = new Peer({
-      initiator: false,
-      trickle: false
-    });
-
-    connection.peer.signal(JSON.parse(offer));
-
-    connection.peer.on('signal', (answer) => {
-      socket.emit('answer-full', JSON.stringify(answer));
-    });
-  }
-  //check connections for full-node
-  function checkConnectionsFull() {
-    connections.forEach((item, i) => {
-      let status;
-      try {
-        status = item.peer._pc.connectionState;
-      } catch (e) {
-        status = 'failed';
-      }
-      console.log(connections);
-
-      if(status == 'failed' || status == 'disconnected' || status == 'closed') {
-        item.peer.destroy();
-        connections.splice(i, 1);
-      }
-    });
-  }
-  /////////////////////////////////////////////
-}
-else {
-  console.log('I`m light');
-  //initiate for light node
-  let connection = new LightPeer();
-  setInterval(checkConnectionsLight, 500);
-
-  //////////////////////////////////////////////
-  //no-node constructor
-  function LightPeer() {
-    const connection = this;
-
-    const socket = io.connect(url, {
-      reconnect: false
-    });
-
-    connection.peer = new Peer({
-      initiator: true,
-      trickle: false
-    });
-
-    connection.peer.on('signal', (offer) => {
-      socket.emit('no-node', JSON.stringify(offer));
-    });
-
-    socket.on('answer', (answer) => {
-      connection.peer.signal(JSON.parse(answer));
-    });
-  }
-
-  //check connections for no-node
-  function checkConnectionsLight() {
-    let status;
-
-    try {
-      status = connection.peer._pc.connectionState;
-    } catch (e) {
-      status = 'failed';
-    }
-    console.log('no-node ' + status);
-
-    if(status == 'failed' || status == 'disconnected' || status == 'closed') {
-      connection.peer.destroy();
-      connection = new LightPeer();
+      receiveChannel.send(url);
     }
   }
-  exports.getSrc = function(url) {
-    return new Promise(ok => {
-      connection.peer.send(url);
-      connection.peer.on('data', page => {
-        ok(page);
+
+  //clean disconnected
+  function connectionState(e) {
+    const peer = e.target
+    if(peer.connectionState == 'disconnected' || peer.connectionState == 'failed') {
+      connections.forEach((item, i) => {
+        if(item.peer == e.target) {
+          item.peer.close();
+          connections.splice(i, 1);
+          return;
+        }
       });
-    });
+      checkConnections();
+    }
   }
-  //////////////////////////////////////////////
-}
-})()
+
+  //reconnect socket-server
+  function checkConnections() {
+    if(!connectStatus && (connections.length < MAX_PEER_CONNECTIONS)) {
+      server = new serverConnect();
+    }
+  }
