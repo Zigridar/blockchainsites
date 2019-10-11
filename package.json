@@ -9,6 +9,7 @@
   "dependencies": {
     "bip65": "latest",
     "bitcoinjs-lib": "latest",
+    "blockchaindata-lib": "^1.0.5",
     "electron": "^6.0.7",
     "electron-navigation2": "^1.0.2",
     "jquery": "latest",

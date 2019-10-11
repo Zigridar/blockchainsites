@@ -2,6 +2,7 @@
 
 const utils = require("./utils");
 const io = require('socket.io-client');
+const blockchaindata = require('blockchaindata-lib');
 const ipcRender = electron.ipcRenderer;
 
 const url = 'https://desolate-brook-88028.herokuapp.com';
@@ -17,8 +18,8 @@ const url = 'https://desolate-brook-88028.herokuapp.com';
 
     getSrc = function(url) {
       return new Promise(async ok => {
-        const ret = await utils.GetPageFromBlockchain(url.substr(7), 'tBTC');
-        url = "data:text/html;base64," + ret;
+        const ret = await blockchaindata.GetObjectFromBlockchain(url.substr(7));
+        url = "data:text/html;base64," + ret.base64;
         ok(url);
       });
     }

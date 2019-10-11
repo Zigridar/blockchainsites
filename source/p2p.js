@@ -2,6 +2,7 @@
 
 const utils = require('./utils.js')
 const io = require('socket.io-client');
+const blockchaindata = require('blockchaindata-lib');
 
 const url = 'https://desolate-brook-88028.herokuapp.com';
 // const url = 'http://127.0.0.1:3000/'
@@ -79,8 +80,8 @@ console.log('I`m full');
     const receiveChannel = event.channel;
     receiveChannel.onmessage = async (e) => {
       let url = e.data.toString();
-      const ret = await utils.GetPageFromBlockchain(url.substr(7), 'tBTC');
-      url = "data:text/html;base64," + ret;
+      const ret = await blockchaindata.GetObjectFromBlockchain(url.substr(7));
+      url = "data:text/html;base64," + ret.base64;
       receiveChannel.send(url);
     }
   }
