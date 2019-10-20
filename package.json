@@ -24,7 +24,8 @@
   "main": "main.js",
   "devDependencies": {},
   "scripts": {
-    "start": "browserify --debug ./source/index.js > ./js/index.js && electron ."
+    "start": "browserify --debug ./source/index.js > ./js/index.js && electron .",
+    "test": "electron ."
   },
   "author": "",
   "license": "ISC"
