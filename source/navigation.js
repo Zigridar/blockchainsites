@@ -64,7 +64,7 @@ const url = 'http://144.76.71.116:3000/';
     function connectionToFull() {
 
       const socket = io.connect(url, {
-        reconnect: true
+        reconnect: false
       });
 
       //connection state logs
@@ -163,6 +163,20 @@ const url = 'http://144.76.71.116:3000/';
           }
         }
       }
+
+      //reconnecting to server
+      socket.on('disconnect', () => {
+        socket.disconnect();
+        setTimeout(function () {
+          if(lowNode.connectionState != 'connected') {
+            lowNode.close();
+            connect = new connectionToFull();
+            browser.getSrc = getSrc;
+            console.log('reconnect');
+            clearInterval(timer);
+          }
+        }, 3000);
+      });
 
     }
   }

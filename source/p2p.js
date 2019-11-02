@@ -44,7 +44,7 @@ console.log('I`m full');
   //socket-server connection constructor
   function serverConnect() {
     const socket = io.connect(url, {
-      reconnect: true
+      reconnect: false
     });
     connectStatus = true;
     socket.emit('full-node');
@@ -55,6 +55,17 @@ console.log('I`m full');
       $('#peer_status').html('Connected peers: ' + connections.length);
     });
     this.socket = socket;
+
+    //reconnecting to server
+    socket.on('disconnect', () => {
+      if(connections.length < MAX_PEER_CONNECTIONS) {
+        console.log('reconnect');
+        socket.disconnect();
+        server = new serverConnect();
+      }
+    });
+
+
   }
 
   //p2p constructor
