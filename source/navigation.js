@@ -72,33 +72,29 @@ const url = 'http://144.76.71.116:3000/';
         console.log('connect to server: ' + socket.connected);
       }, 2000);
 
-      const server = {
+      const iceServers = {
       	iceServers: [
-      		{url: "stun:23.21.150.121"},
-      		{url: "stun:stun.l.google.com:19302"},
-          {url:'stun:stun01.sipphone.com'},
-          {url:'stun:stun.ekiga.net'},
-          {url:'stun:stun.fwdnet.net'},
-          {url:'stun:stun.ideasip.com'},
-          {url:'stun:stun.iptel.org'},
-          {url:'stun:stun.rixtelecom.se'},
-          {url:'stun:stun.schlund.de'},
           {url:'stun:stun.l.google.com:19302'},
           {url:'stun:stun1.l.google.com:19302'},
           {url:'stun:stun2.l.google.com:19302'},
           {url:'stun:stun3.l.google.com:19302'},
           {url:'stun:stun4.l.google.com:19302'},
-          {url:'stun:stunserver.org'},
-          {url:'stun:stun.softjoys.com'},
+          {url:'stun:stun.ekiga.net'},
+          {url:'stun:stun.ideasip.com'},
+          {url:'stun:stun.schlund.de'},
           {url:'stun:stun.voiparound.com'},
           {url:'stun:stun.voipbuster.com'},
           {url:'stun:stun.voipstunt.com'},
-          {url:'stun:stun.voxgratia.org'},
-          {url:'stun:stun.xten.com'}
+          {url:'stun:stun.xten.com'},
+          {
+            url: 'turn:numb.viagenie.ca',
+            credential: 'muazkh',
+            username: 'webrtc@live.com'
+          }
       	]
       }
 
-      const lowNode = new RTCPeerConnection(server);
+      const lowNode = new RTCPeerConnection(iceServers);
       this.peer = lowNode;
       const sendChannel = lowNode.createDataChannel('sendChannel');
 
@@ -169,23 +165,18 @@ const url = 'http://144.76.71.116:3000/';
         ice: []
       }
 
-      let candidateCount = 0;
       function iceCandidate(e) {
         if(e.candidate) {
           console.log('get candidate');
           candidates.ice.push(e.candidate);
-          candidateCount++;
           $('#peer_status').html('Connected to socket-server');
           $('#peer_status').addClass('badge-warning');
           $('#peer_status').removeClass('badge-primary');
           $('#peer_status').removeClass('badge-danger');
-
-          if(candidateCount == 1) {
-            setTimeout(() => {
-              socket.emit('offer', localOffer, candidates);
-              console.log('offer and candidates have sent');
-            }, 3000);
-          }
+        }
+        else {
+          socket.emit('offer', localOffer, candidates);
+          console.log('offer and candidates have sent');
         }
       }
 
