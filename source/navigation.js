@@ -50,7 +50,7 @@ const url = 'http://144.76.71.116:3000/';
 
     $('#statusbar').css('display', 'block');
     //connect to full-node
-    let connect = connectionToFull();
+    connectionToFull();
 
     $('#peer_status').addClass('badge-danger');
     $('#peer_status').html('No connection to socket-server');
@@ -58,92 +58,82 @@ const url = 'http://144.76.71.116:3000/';
     //connection constructor
     function connectionToFull() {
 
-      let obj = {};
-
       const socket = io.connect(url, {
         reconnect: false
       });
-
-      //connection state logs
-      const timer = setInterval(function () {
-        console.log('connect to server: ' + socket.connected);
-        if(socket.connected) {
-          $('#peer_status').removeClass('badge-primary');
-          $('#peer_status').removeClass('badge-danger');
-          $('#peer_status').addClass('badge-warning');
-          $('#peer_status').html('Connect to socket-server');
-        }
-        else {
-          $('#peer_status').removeClass('badge-primary');
-          $('#peer_status').removeClass('badge-danger');
-          $('#peer_status').addClass('badge-warning');
-          $('#peer_status').html('Connecting to socket-server...');
-        }
-
-      }, 2000);
 
       const lowNode = new Peer({
         initiator: true,
         trickle: false
       });
 
-      const pc = lowNode._pc;
-      obj.peer = pc
-      obj.Peer = lowNode;
-      pc.onconnectionstatechange = connectionState;
+      socket
+        .on('connect', () => {
+          console.log('Connected to socket-server');
+          $('#peer_status').removeClass('badge-primary');
+          $('#peer_status').removeClass('badge-danger');
+          $('#peer_status').addClass('badge-warning');
+          $('#peer_status').html('Connected to socket-server');
+        })
+        .on('answer', answer => {
+          lowNode.signal(answer);
+          console.log('answer has been received');
+          socket.disconnect();
 
-      lowNode.on('signal', (offer) => {
+          $('#peer_status').html('host connection: connected');
+          $('#peer_status').addClass('badge-primary');
+          $('#peer_status').removeClass('badge-warning');
+          $('#peer_status').removeClass('badge-danger');
+        })
+        .on('disconnect', () => {
+          console.log('Disconnected from socket-server');
+          $('#peer_status').removeClass('badge-primary');
+          $('#peer_status').removeClass('badge-danger');
+          $('#peer_status').addClass('badge-warning');
+          $('#peer_status').html('Disconnected from socket-server');
+          setTimeout(() => {
+            if(lowNode._pc.connectionState != 'connected') {
+              lowNode.destroy();
+
+              connectionToFull();
+              browser.getSrc = getSrc;
+              console.log('reconnect');
+            }
+          }, 10000);
+        });
+
+      lowNode._pc.onconnectionstatechange = function ()
+      {
+        console.log('onconnectionstatechange:' + lowNode._pc.connectionState);
+        if(lowNode._pc.connectionState == 'closed' || lowNode._pc.connectionState == 'disconnected' || lowNode._pc.connectionState == 'failed') {
+          $('#peer_status').removeClass('badge-warning');
+          $('#peer_status').removeClass('badge-primary');
+          $('#peer_status').addClass('badge-danger');
+          $('#peer_status').html('host disconnected');
+
+          connectionToFull();
+          console.log('reconnect');
+          browser.getSrc = getSrc;
+        }
+      };
+
+      lowNode.on('signal', offer => {
         socket.emit('offer', offer);
-        console.log('offer has been sent');
-      });
-
-      socket.on('answer', (answer) => {
-        lowNode.signal(answer);
-        console.log('answer has been received');
-        socket.disconnect();
-        clearInterval(timer);
-        $('#peer_status').html('host connection: connected');
-        $('#peer_status').addClass('badge-primary');
-        $('#peer_status').removeClass('badge-warning');
-        $('#peer_status').removeClass('badge-danger');
-      });
-
-      socket.on('disconnect', () => {
-        setTimeout(function () {
-          if(connect.peer.connectionState != 'connected') {
-            lowNode.destroy();
-            connect = connectionToFull();
-            browser.getSrc = getSrc;
-            console.log('reconnect');
-            clearInterval(timer);
-          }
-        }, 10000);
+        console.log('offer has been sent '+JSON.stringify(offer));
       });
 
         getSrc = async function(url) {
         return new Promise(ok => {
-            if(connect.peer.connectionState == 'connected') {
-              connect.Peer._channel.send(url);
-              connect.Peer._channel.onmessage = e => {
+            if(lowNode._pc.connectionState == 'connected') {
+              lowNode._channel.send(url);
+              lowNode._channel.onmessage = e => {
                 ok(e.data);
               }
             }
         });
       }
 
-      function connectionState() {
-        console.log(connect.peer.connectionState);
-        if(connect.peer.connectionState == 'closed' || connect.peer.connectionState == 'disconnected' || connect.peer.connectionState == 'failed') {
-          $('#peer_status').removeClass('badge-warning');
-          $('#peer_status').removeClass('badge-primary');
-          $('#peer_status').addClass('badge-danger');
-          $('#peer_status').html('host disconnected');
-          connect = connectionToFull();
-          console.log('reconnect');
-          browser.getSrc = getSrc;
-        }
-      }
-      return obj;
+      return;
     }
   }
 
@@ -154,9 +144,6 @@ const url = 'http://144.76.71.116:3000/';
 
   $(document).ready(function() {
     ipcRender.send('page-loaded');
-    $('#spinner').css('display', 'none');;
-    $('#fullpage').css('display', 'block');;
-    $('.navbar').css('display', 'block');;
   });
 
   ipcRender.on('oldBookmarks', (event, oldBookmarks) => {
