@@ -118,3 +118,10 @@ console.log('I`m full');
       server = serverConnect();
     }
   }
+
+  $(document).ready(function() {
+    ipcRender.send('page-loaded');
+    $('#spinner').css('display', 'none');
+    $('#fullpage').css('display', 'block');
+    $('.navbar').css('display', 'block');
+  });
