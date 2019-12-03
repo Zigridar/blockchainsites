@@ -57,7 +57,7 @@ app.on('window-all-closed', () => {
 //Read html from file to edit
 ipcMain.on('openBtn', (event) => {
 
-  dialog.showOpenDialog(constants.ipcOpen, async (filePath) => {
+  dialog.showOpenDialog(window, constants.ipcOpen, async (filePath) => {
     const html = await utils.openHTML(filePath[0]);
     event.sender.send('openReply', html);
   });
@@ -67,7 +67,7 @@ ipcMain.on('openBtn', (event) => {
 //Save local page
 ipcMain.on('saveBtn', (event, page) => {
 
-  dialog.showSaveDialog(constants.ipcSave, async (fileName) => {
+  dialog.showSaveDialog(window, constants.ipcSave, async (fileName) => {
     await utils.saveLocal(page, fileName);
   });
 
