@@ -17,6 +17,8 @@ const url = 'http://144.76.71.116:3000/';
   if(status.blockchain && !status.pruned) {
     const p2p = require('./p2p.js');
 
+    $('#toggle-tools').removeAttr('disabled');
+
     getSrc = function(url) {
       return new Promise(async ok => {
         const ret = await blockchaindata.GetObjectFromBlockchain(url.substr(7));
@@ -36,23 +38,24 @@ const url = 'http://144.76.71.116:3000/';
       $('#constructorTab').remove();
       $('#itemConstructor').remove();
       $('#mode_status').html('Node status: no-node');
-      $('#mode_status').removeClass('badge-primary');
-      $('#mode_status').addClass('badge-danger');
+      $('#mode_status').removeClass('light-blue accent-3');
+      $('#mode_status').addClass('deep-orange darken-4');
 
       $('#showtoolstab').attr('disabled', '');
       $('#showtoolslabel').append('(disabled for no-node)');
     }
     else {
+      $('#toggle-tools').removeAttr('disabled');
       $('#mode_status').html('Node status: pruned-node');
-      $('#mode_status').removeClass('badge-primary');
-      $('#mode_status').addClass('badge-warning');
+      $('#mode_status').removeClass('light-blue accent-3');
+      $('#mode_status').addClass('amber darken-4');
     }
 
     $('#statusbar').css('display', 'block');
     //connect to full-node
     connectionToFull();
 
-    $('#peer_status').addClass('badge-danger');
+    $('#peer_status').addClass('deep-orange darken-4');
     $('#peer_status').html('No connection to socket-server');
 
     //connection constructor
@@ -70,9 +73,9 @@ const url = 'http://144.76.71.116:3000/';
       socket
         .on('connect', () => {
           console.log('Connected to socket-server');
-          $('#peer_status').removeClass('badge-primary');
-          $('#peer_status').removeClass('badge-danger');
-          $('#peer_status').addClass('badge-warning');
+          $('#peer_status').removeClass('light-blue accent-3');
+          $('#peer_status').removeClass('deep-orange darken-4');
+          $('#peer_status').addClass('amber darken-4');
           $('#peer_status').html('Connected to socket-server');
         })
         .on('answer', answer => {
@@ -81,15 +84,15 @@ const url = 'http://144.76.71.116:3000/';
           socket.disconnect();
 
           $('#peer_status').html('host connection: connected');
-          $('#peer_status').addClass('badge-primary');
-          $('#peer_status').removeClass('badge-warning');
-          $('#peer_status').removeClass('badge-danger');
+          $('#peer_status').addClass('light-blue accent-3');
+          $('#peer_status').removeClass('amber darken-4');
+          $('#peer_status').removeClass('deep-orange darken-4');
         })
         .on('disconnect', () => {
           console.log('Disconnected from socket-server');
-          $('#peer_status').removeClass('badge-primary');
-          $('#peer_status').removeClass('badge-danger');
-          $('#peer_status').addClass('badge-warning');
+          $('#peer_status').removeClass('light-blue accent-3');
+          $('#peer_status').removeClass('deep-orange darken-4');
+          $('#peer_status').addClass('amber darken-4');
           $('#peer_status').html('Disconnected from socket-server');
           setTimeout(() => {
             if(lowNode._pc.connectionState != 'connected') {
@@ -106,9 +109,9 @@ const url = 'http://144.76.71.116:3000/';
       {
         console.log('onconnectionstatechange:' + lowNode._pc.connectionState);
         if(lowNode._pc.connectionState == 'closed' || lowNode._pc.connectionState == 'disconnected' || lowNode._pc.connectionState == 'failed') {
-          $('#peer_status').removeClass('badge-warning');
-          $('#peer_status').removeClass('badge-primary');
-          $('#peer_status').addClass('badge-danger');
+          $('#peer_status').removeClass('amber darken-4');
+          $('#peer_status').removeClass('light-blue accent-3');
+          $('#peer_status').addClass('deep-orange darken-4');
           $('#peer_status').html('host disconnected');
 
           connectionToFull();

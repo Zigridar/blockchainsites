@@ -2,7 +2,7 @@ body {
   -webkit-user-select: none;
 }
 
-#responceTextarea, #nav-body-views, #nav-body-ctrls, #scrolldiv {
+#responceTextarea, #nav-body-views, #nav-body-ctrls, #scrolldiv, #pageTx {
   -webkit-user-select: text;
 }
 
@@ -63,12 +63,12 @@ div.fp-controlArrow.fp-next {
 
 #statusbar {
   position: relative;
-  left: 60px;
-  top: 8px;
+  left: 180px;
+  top: 22px;
   display: none;
 }
 
-#settings_but {
+#settings-btn {
   position: absolute;
   right: 25px;
   top: 18px;
@@ -88,4 +88,47 @@ div.fp-controlArrow.fp-next {
   position: absolute;
   left: 13%;
   top: 30%;
+}
+
+.section {
+  padding: 0px !important;
+}
+
+#logo {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  left: 20px;
+  top: -40px;
+  /* top: 30px; */
+}
+
+.left.hide-on-med-and-down {
+  position: relative;
+  left: 180px;
+}
+
+#pageTx {
+  overflow-y: scroll;
+  height: 180px;
+}
+
+#constructor-table {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

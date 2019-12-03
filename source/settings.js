@@ -2,10 +2,10 @@
 
 const $ = require('jquery');
 
-$('#settingsSave').click(() => {
+$('#toggle-tools').change(() => {
 
   //toggle toolsTab
-  if($('#showtoolstab').is(':checked')) {
+  if($('#toggle-tools').is(':checked')) {
     $('#toolsTab').css('display', 'inline');
     $('#itemTools').css('display', 'inline');
     $('#toolsLink')[0].click();

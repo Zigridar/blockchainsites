@@ -16,15 +16,16 @@
     <!-- electron must be included in the HTML above other libreries -->
     <script src="./js/electronForGUI.js"></script>
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- Custom styles for this template -->
     <link href="css/index.css" rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script> <!-- SummerNote -->
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 
     <!-- FullPage -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.7/jquery.fullpage.js"></script>
@@ -32,7 +33,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.7/jquery.fullpage.css">
 
     <!-- CodeMirror -->
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/theme/eclipse.css">
@@ -47,117 +47,143 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/hint/javascript-hint.js"></script>
 
     <!-- SummerNote -->
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.js"></script>
-
-    <!-- autocomplete -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.10/jquery.autocomplete.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-lite.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-lite.js"></script>
 
   </head>
   <body>
     <img src="./source/img/loading_spinner.gif" id="spinner">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg" width="35" height="35" alt="" id="img">
-      Bitcoin Sites
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item" id="itemInfo">
-          <a class="nav-link" href="#first">Info<span class="sr-only"></span></a>
-        </li>
-        <li class="nav-item" id="itemBrowser">
-          <a id="browserLink" class="nav-link" href="#first/1">Browser</a>
-        </li>
-        <!-- <li class="nav-item" id="itemSearch">
-          <a class="nav-link" href="#first/2">Search engine</a>
-        </li> -->
-        <li class="nav-item" id="itemConstructor">
-          <a class="nav-link" href="#first/2">Constructor</a>
-        </li>
-        <li class="nav-item" id="itemTools">
-          <a id="toolsLink" class="nav-link" href="#first/3">Tools<span class="sr-only"></span></a>
-        </li>
-        <li>
-          <div id="statusbar">
-            <span id="internet_status" class="badge">Internet state: </span>
-            <span id="mode_status" class="badge badge-primary"></span>
-            <span id="peer_status" class="badge badge-primary"></span>
+    <!-- side nav -->
+    <ul id="slide-out" class="sidenav indigo lighten-5">
+      <li>
+        <div class="user-view">
+          <div class="background">
+            <img src="./source/img/network.gif">
           </div>
-        </li>
-        <li id="settings_but">
-          <span class="badge badge-primary" data-toggle="modal" data-target="#settings">
-            <img width="20px" height="20px" src="https://img.icons8.com/ios-filled/64/000000/settings.png">
-          </span>
-        </li>
-      </ul>
-    </div>
+          <h3>
+            <i class="small material-icons">settings</i>
+            Settings
+          </h3>
+        </div>
+      </li>
+      <li>
+        <div class="switch">
+          <label>
+            <input id="toggle-tools" type="checkbox" disabled>
+            <span class="lever"></span>
+            Tools tab
+          </label>
+        </div>
+      </li>
+      <!-- <li><a href="#!"><i class="material-icons">cloud</i>Second Link With Icon</a></li>
+      <input type="checkbox" class="custom-control-input" id="showtoolstab">
+      <label id="showtoolslabel" class="custom-control-label" for="showtoolstab">Show tools tab </label> -->
+
+      <li><div class="divider"></div></li>
+      <!-- <li><a class="subheader">Subheader</a></li> -->
+    </ul>
+    <div>
+      <!-- navbar -->
+      <nav class="indigo darken-3">
+        <div class="nav-wrapper">
+
+          <a href="#" class="brand-logo">
+            <img src="./source/img/logo.png" id="logo">
+          </a>
+          <ul class="left hide-on-med-and-down">
+            <li id="itemInfo" class="navigate-item">
+              <a href="#first" class="flow-text">Info</a>
+            </li>
+            <li id="itemBrowser" class="navigate-item">
+              <a id="browserLink" href="#first/1" class="flow-text">Browser</a>
+            </li>
+            <!-- <li id="itemSearch">
+              <a chref="#first/2">Search engine</a>
+            </li> -->
+            <li id="itemConstructor" class="navigate-item">
+              <a href="#first/2" class="flow-text">Constructor</a>
+            </li>
+            <li id="itemTools" class="navigate-item">
+              <a id="toolsLink" href="#first/3" class="flow-text">Tools</a>
+            </li>
+          </ul>
+          <!-- status bar -->
+          <div id="statusbar">
+            <span id="internet_status" class="left new badge light-blue accent-3" data-badge-caption="">Internet state: </span>
+            <span id="mode_status" class="left new badge light-blue accent-3" data-badge-caption=""></span>
+            <span id="peer_status" class="left new badge light-blue accent-3" data-badge-caption=""></span>
+          </div>
+        </div>
     </nav>
 
-    <div id="fullpage">
+    <a id="settings-btn" data-target="slide-out" class="sidenav-trigger btn-small btn-floating btn-large waves-effect waves-light red right"><i class="material-icons">settings</i></a>
+  </div>
+
+    <!-- content -->
+    <div id="fullpage" class="indigo lighten-5">
       <div class="section">
+        <!-- info tab -->
         <div class="slide active" id="infoTab">
-          <div class="jumbotron">
-            <p class="lead">This is an application for creating and searching sites</p>
-              <hr class="my-4">
-            <p>It uses the blockchain of Bitcoin Test</p>
-          </div>
-
-
-          <div class='container'>
-              <div class='row'>
-                <div class="col md-8">
-                  <h3>
-                    <table class="table table-hover">
-                      <tbody>
-                        <tr>
-                          <td>Total sites:</td>
-                          <td id="totalSites"></td>
-                        </tr>
-                        <tr>
-                          <td>My sites count:</td>
-                          <td id="mySitesCount"></td>
-                        </tr>
-                        <tr>
-                          <td>Available memory:</td>
-                          <td class="availableMemory"></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </h3>
-                </div>
-                <div class="col md-4">
-                  <p>
-                    For getting more available memory you have to visit
-                    <a href="#" id="getLink">bitcoin testnet3 faucet</a>
-                  </p>
-                  <p>
-                    On that site in the input field you must paste your personal address to recieve BTC
-                  </p>
-                  <button class="btn btn-primary copyAddress">
-                    Copy address
-                  </button>
-                  <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#collapse_target">
-                    Show my sites
-                  </button>
-                  <br><br>
+          <div class="container">
+            <div class="row">
+              <div class="col m12">
+                <div class="card blue-grey darken-1">
+                  <div class="card-content white-text">
+                    <p class="flow-text">This is an application for creating and searching sites</p>
+                      <hr>
+                    <p>It uses the blockchain of Bitcoin Test</p>
+                  </div>
+                  <!-- <div class="card-action">
+                    <a href="#">This is a link</a>
+                    <a href="#">This is a link</a>
+                  </div> -->
                 </div>
               </div>
-          </div>
-          <div class="container">
-            <div class="collapse" id="collapse_target">
-              <div class="card card-body" id="scrolldiv">
-                <ul class="list-group list-group-flush" id="pageTx">
+            </div>
+
+            <div class="row">
+              <div class="col m6">
+                <ul class="collection">
+                  <li class="collection-item indigo lighten-4 flow-text">
+                    Total sites:
+                  </li>
+                  <li class="collection-item indigo lighten-4 flow-text">
+                    My site count:
+                    <span id="mySitesCount"></span>
+                  </li>
+                  <li class="collection-item indigo lighten-4 flow-text">
+                    Available memory:
+                    <span class="availableMemory"></span>
+                  </li>
                 </ul>
+              </div>
+              <div class="col m6">
+                <p>
+                  For getting more available memory you have to visit
+                  <a href="#" id="getLink">bitcoin testnet3 faucet</a>
+                </p>
+                <p>
+                  On that site in the input field you must paste your personal address to recieve BTC
+                </p>
+                <a class="waves-effect waves-light btn copyAddress">Copy address</a>
+                <br><br>
               </div>
             </div>
           </div>
+          <!-- my sites -->
+          <div class="container">
+            <ul class="collapsible popout">
+              <li>
+                <div class="collapsible-header blue lighten-4"><i class="material-icons">web</i>Show my sites</div>
+                <div class="collapsible-body blue lighten-4">
+                  <ul class="collection" id="pageTx"></ul>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
+        <!-- browser -->
         <div class="slide">
           <div id="searchBar">
             <div id="nav-body-ctrls"></div>
@@ -165,170 +191,89 @@
             <div id="nav-body-views"></div>
           </div>
         </div>
+        <!-- constructor -->
         <div class="slide" id="constructorTab">
-          <div class="jumbotron">
-            <p class="lead">This is a simple constructor for creating your own web-page</p>
-              <hr class="my-4">
-            <p>It's using the blockchain of Bitcoin Test</p>
-            <div class="row">
-              <div class="col-4" id="constructorTable">
-                <table class="table table-sm">
-                  <tbody>
-                    <tr>
-                      <td>Available memory:</td>
-                      <td class="availableMemory"></td>
-                    </tr>
-                    <tr>
-                      <td>Page size:</td>
-                      <td id="pageSize"></td>
-                    </tr>
-                  </tbody>
-                </table>
-                <button class="btn btn-primary" id="getMore" data-toggle="modal" data-target="#exampleModalCenter">Get more</button>
+
+          <div class="container">
+            <div class="card blue-grey darken-1">
+              <div class="card-content white-text">
+                <p class="flow-text constructorQuestion">Do you want to create new page or open existing?</p>
+                <ul id="constructor-table" class="collection blue-grey darken-1">
+                  <li class="collection-item blue-grey darken-1">
+                    Available memory:
+                    <span class="availableMemory"></span>
+                  </li>
+                  <li class="collection-item blue-grey darken-1">
+                    Page size:
+                    <span id="pageSize"></span>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-action constructorQuestion">
+                <a id="createBtn" class="waves-effect waves-light btn">create new</a>
+                <a class="waves-effect waves-light btn openBtn">open</a>
               </div>
             </div>
-          </div>
-
-          <div class="col-8" id="constructorQuestion">
-            <h4 class="lead">Do you want to create new page or open existing?</h4>
-            <button type="button" class="btn btn-secondary" id="createBtn">create new</button>
-            <button type="button" class="btn btn-secondary openBtn">open file</button>
           </div>
 
           <div class='container' id="codContainer">
 
-              <div class='row' id="codeeditor">
-
-              </div>
+              <div class='row' id="codeeditor"></div>
               <br>
-              <button type="button" class="btn btn-primary" id="saveBtn">Save html local</button>
-              <button type="button" class="btn btn-primary openBtn">Open file</button>
-              <button type="button" class="btn btn-success" id="loadBtn">Load page to BlockChain</button>
-          </div>
-          <br><br><br><br>
-        </div>
-        <!-- <div class="slide">
-          <div class="jumbotron">
-            <p class="lead">With the Search Engine you can find other sites</p>
-              <hr class="my-4">
-            <p>Anything</p>
-          </div>
 
-          <div class='container'>
-              <div class='row'>
-                  <div class='col md-12'>
-                      <h2>Search engine</h2>
-                  </div>
-              </div>
-          </div> -->
-        <!-- </div> -->
+              <a id="saveBtn" class="waves-effect waves-light btn">Save html local</a>
+              <a class="waves-effect waves-light btn openBtn">Open file</a>
+              <a id="loadBtn" class="waves-effect waves-light btn">Load page to BlockChain</a>
+          </div>
+        </div>
+      <!-- tools tab -->
       <div class="slide" id="toolsTab">
-        <div class="jumbotron">
-          <p class="lead">With the Tools you can send RPC-requests to net of the bitcoin test</p>
-            <hr class="my-4">
-          <p>For successful work it's necessary that the client of bitcoin is running</p>
-        </div>
 
+        <div class="container">
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <p class="lead">With the Tools you can send RPC-requests to net of the bitcoin test</p>
+                <hr>
+              <p>For successful work it's necessary that the client of bitcoin is running</p>
+            </div>
+          </div>
+        </div>
 
         <div class='container'>
-            <div class='row'>
-                <div class='col md-12'>
-                    <h2>Command Line</h2>
+          <div class='row'>
+            <div class='col m12'>
+              <form id="formRPC">
+                <div class="input-field col s12">
+                  <i class="material-icons prefix">send</i>
+                  <input type="text" id="rpcCommand" class="autocomplete">
+                  <label for="rpcCommand">command</label>
                 </div>
-            </div>
-            <div class='row'>
-              <div class='col md-12'>
-                <form id="formRPC">
 
-                  <div class="input-group mb-3">
-                    <input type="text" class="form-control" id="rpcCommand" placeholder="getwalletinfo" aria-label="command" aria-describedby="button-addon2">
-                    <div class="input-group-append">
-                      <button class="btn btn-outline-secondary" type="submit" id="button-addon2">send</button>
-                    </div>
+                <br><br>
+                <br><br>
+
+                <div class="card" id="resultCard">
+                  <div class="card-content">
+                    <span class="card-title" id="resultTitle"></span>
+                    <pre>
+                      <p id="responceTextarea"></p>
+                    </pre>
                   </div>
+                </div>
 
-                  <br><br>
+                <br><br>
+                <br><br>
 
-                    <div class="card" id="resultCard">
-                      <div class="card-body">
-                        <h5 class="card-title" id="resultTitle"></h5>
-                        <pre>
-                          <p class="card-text" id="responceTextarea">
-
-                          </p>
-                        </pre>
-                      </div>
-                    </div>
-
-                </form>
-              </div>
+              </form>
             </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </body>
 
-    <!-- modal -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Getting more memory</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>
-              For getting more available memory you have to visit
-              <a href="#" id="getLink">bitcoin testnet3 faucet</a>
-            </p>
-            <p>
-              On that site in the input field you must paste your personal address to recieve BTC
-            </p>
-            <button type="button" class="btn btn-primary copyAddress">Copy address</button>
-            <br><br>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- settings -->
-    <div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="settingsTitle">Settings</h5>
-        </div>
-        <div class="modal-body">
-          <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="showtoolstab">
-            <label id="showtoolslabel" class="custom-control-label" for="showtoolstab">Show tools tab </label>
-          </div>
-          <hr>
-          <h4>Client mode</h4>
-          <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
-            <label class="custom-control-label" for="customRadioInline1">Full node</label>
-          </div>
-          <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
-            <label class="custom-control-label" for="customRadioInline2">Pruned node</label>
-          </div>
-          <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="customRadioInline3" name="customRadioInline1" class="custom-control-input">
-            <label class="custom-control-label" for="customRadioInline3">No node</label>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="settingsSave">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script src="js/index.js"></script>
   <script type="text/javascript" src="js/fullpage.js"></script>
 </html>
