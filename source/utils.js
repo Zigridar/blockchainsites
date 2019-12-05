@@ -7,6 +7,7 @@ const bip65 = require('bip65');
 const bitcoin = require('bitcoinjs-lib');
 const fetch = require('node-fetch');
 const fs = require('fs');
+const request = require('request');
 const Buffer = require('buffer').Buffer;
 const constants = require('./constants.js');
 const code = bitcoin.opcodes;
@@ -615,4 +616,49 @@ exports.nodeStatus = function()
       });
     }
   });
+}
+
+exports.downloadFile = function(file_url, targetPath, done, progress)
+{
+  //size variables
+  let receive_bytes = 0;
+  let total_bytes = 0;
+
+  //request for downloading
+  const req = request({
+    method: 'GET',
+    uri: file_url
+  });
+
+  //create downloading stream
+  const output = fs.createWriteStream(targetPath);
+  req.pipe(output);
+
+  //event listeners
+  req.on('response', (data) => {
+    total_bytes = parseInt(data.headers['content-length']);
+  });
+
+  req.on('data', chunk => {
+    receive_bytes += chunk.length;
+  });
+
+  req.on('end', () => {
+    done(true);
+    console.log('File succes downloaded');
+    clearInterval(timer);
+    return;
+  });
+
+  req.on('error', () => {
+    done(false);
+  });
+
+  //show progress
+  const timer = setInterval(function () {
+    const percentage = (receive_bytes*100) / total_bytes;
+    progress(Math.ceil(percentage));
+    console.log(Math.ceil(percentage) + '% | ' + Math.ceil(receive_bytes/(1048576)) + ' Mbytes');
+  }, 1000);
+
 }

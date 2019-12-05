@@ -30,3 +30,7 @@ exports.ipcOpen = {
 exports.getMemory = {
   faucet: "https://coinfaucet.eu/en/btc-testnet/"
 }
+
+exports.installer = {
+  win64: "https://bitcoin.org/bin/bitcoin-core-0.18.1/bitcoin-0.18.1-win64-setup.exe"
+}

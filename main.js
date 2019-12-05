@@ -3,7 +3,7 @@
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
-const {app, BrowserWindow, dialog, ipcMain} = require('electron');
+const {app, BrowserWindow, dialog, ipcMain, shell} = require('electron');
 
 const utils = require('./source/utils.js');
 const constants = require('./source/constants.js');
@@ -124,4 +124,32 @@ ipcMain.on('JsonBookmarks', (event, newBookmarks) => {
   fs.writeFile("bookmarks.json", newBookmarks, () => {
     window.close();
   });
+});
+
+////////////
+const downloadPath = __dirname + '\\downloads\\bitcoin-core.exe';
+
+ipcMain.on('download', () => {
+
+  //
+  function done(status) {
+    if (status) {
+      window.webContents.send('downloaded');
+    }
+    else {
+      window.webContents.send('download-failed');
+    }
+  }
+
+  //
+  function progress(value) {
+    window.webContents.send('progress', value);
+  }
+
+  utils.downloadFile(constants.installer.win64, downloadPath, done, progress);
+});
+
+ipcMain.on('setup', () => {
+  const distPath = path.join(__dirname, 'downloads/bitcoin-core.exe');
+  shell.openItem(distPath);
 });
